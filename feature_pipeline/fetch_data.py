@@ -2,6 +2,7 @@ import os
 import requests
 from datetime import datetime, timezone
 from dotenv import load_dotenv
+from feature_pipeline.feature_engineering import add_time_features
 
 from feature_pipeline.config import (
     CITY_NAME, LATITUDE, LONGITUDE, WEATHER_URL, POLLUTION_URL
@@ -69,6 +70,7 @@ def fetch_current_features() -> dict:
         "nh3": pollution_data["components"]["nh3"],
     }
 
+    merged_row = add_time_features(merged_row)
     return merged_row
 
 
