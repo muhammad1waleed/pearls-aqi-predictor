@@ -58,7 +58,8 @@ def fetch_current_features() -> dict:
         "humidity": weather_data["main"]["humidity"],
         "pressure": weather_data["main"]["pressure"],
         "wind_speed": weather_data["wind"]["speed"],
-        "wind_deg": weather_data["wind"].get("deg"),
+        # "wind_deg": weather_data["wind"].get("deg"),
+        "wind_deg": weather_data["wind"].get("deg", 0),
 
         "aqi": pollution_data["main"]["aqi"],
         "co": pollution_data["components"]["co"],
