@@ -54,3 +54,20 @@ def insert_row(feature_group, row: dict):
     df = pd.DataFrame([row])
     df["timestamp"] = pd.to_datetime(df["timestamp"])
     feature_group.insert(df)
+
+
+def get_latest_rows(feature_group, n: int = 5):
+    """
+    Read the most recent N rows from the feature group, sorted by timestamp
+    descending (most recent first).
+
+    Args:
+        feature_group: The Hopsworks FeatureGroup to read from.
+        n (int): Number of most recent rows to return.
+
+    Returns:
+        pd.DataFrame: The most recent rows.
+    """
+    df = feature_group.read()
+    df = df.sort_values("timestamp", ascending=False)
+    return df.head(n)
