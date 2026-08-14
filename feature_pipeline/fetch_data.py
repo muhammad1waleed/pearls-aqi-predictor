@@ -52,7 +52,8 @@ def fetch_current_features() -> dict:
     # --- Merge into one flat row ---
     merged_row = {
         "city": CITY_NAME,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        # "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(timezone.utc),
 
         "temperature": weather_data["main"]["temp"],
         "humidity": weather_data["main"]["humidity"],

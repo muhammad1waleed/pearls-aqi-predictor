@@ -1,6 +1,7 @@
 import os
 import hopsworks
 from dotenv import load_dotenv
+import pandas as pd
 
 load_dotenv()
 
@@ -35,5 +36,21 @@ def get_or_create_aqi_feature_group(fs):
         description="Hourly weather and air pollution features for Rawalpindi",
         primary_key=["city", "timestamp"],
         event_time="timestamp",
+        time_travel_format="HUDI",
     )
     return feature_group
+
+
+
+
+def insert_row(feature_group, row: dict):
+    """
+    Insert a single feature row into the given feature group.
+
+    Args:
+        feature_group: The Hopsworks FeatureGroup to write to.
+        row (dict): A single flat feature row (from fetch_current_features).
+    """
+    df = pd.DataFrame([row])
+    df["timestamp"] = pd.to_datetime(df["timestamp"])
+    feature_group.insert(df)
