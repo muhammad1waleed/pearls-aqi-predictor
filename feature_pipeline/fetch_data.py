@@ -70,6 +70,7 @@ def fetch_current_features() -> dict:
         "pm2_5": pollution_data["components"]["pm2_5"],
         "pm10": pollution_data["components"]["pm10"],
         "nh3": pollution_data["components"]["nh3"],
+        "is_backfilled": False,
     }
 
     merged_row = add_time_features(merged_row)
