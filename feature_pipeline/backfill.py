@@ -80,26 +80,40 @@ def fetch_historical_pollution(start_dt: datetime, end_dt: datetime) -> list[dic
     return rows
 
 
-def run_backfill(days_back: int = 30):
+def run_backfill(days_back: int = 365, chunk_days: int = 30):
     """
-    Backfill historical pollution data for the last `days_back` days and
-    write it to the feature store.
+    Backfill historical pollution data for the last `days_back` days,
+    fetched in `chunk_days`-sized windows to avoid overly large single
+    API calls, and write it to the feature store.
     """
     end_dt = datetime.now(timezone.utc)
-    start_dt = end_dt - timedelta(days=days_back)
+    overall_start_dt = end_dt - timedelta(days=days_back)
 
-    print(f"Fetching historical pollution data from {start_dt} to {end_dt}...")
-    rows = fetch_historical_pollution(start_dt, end_dt)
-    print(f"Fetched {len(rows)} historical rows.")
+    all_rows = []
+    chunk_start = overall_start_dt
 
-    df = pd.DataFrame(rows)
+    while chunk_start < end_dt:
+        chunk_end = min(chunk_start + timedelta(days=chunk_days), end_dt)
+
+        print(f"Fetching {chunk_start.date()} to {chunk_end.date()}...")
+        rows = fetch_historical_pollution(chunk_start, chunk_end)
+        print(f"  -> {len(rows)} rows")
+        all_rows.extend(rows)
+
+        chunk_start = chunk_end
+        time.sleep(1)  # be polite to the API, avoid rate-limit issues
+
+    print(f"Total fetched: {len(all_rows)} rows")
+
+    df = pd.DataFrame(all_rows)
     df["timestamp"] = pd.to_datetime(df["timestamp"])
 
-    # Explicitly type the all-null weather columns as float64,
-    # since pandas can't infer a type from columns that are 100% None
     weather_columns = ["temperature", "humidity", "pressure", "wind_speed", "wind_deg"]
     for col in weather_columns:
         df[col] = df[col].astype("float64")
+
+    # Drop exact duplicate timestamps that can occur at chunk boundaries
+    df = df.drop_duplicates(subset=["city", "timestamp"]).reset_index(drop=True)
 
     print("Connecting to feature store...")
     fs = get_feature_store()
@@ -110,5 +124,7 @@ def run_backfill(days_back: int = 30):
 
     print("Backfill complete.")
 
+
 if __name__ == "__main__":
-    run_backfill(days_back=30)  
+    run_backfill(days_back=365, chunk_days=30)
+
