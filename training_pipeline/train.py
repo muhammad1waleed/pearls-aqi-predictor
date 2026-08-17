@@ -66,6 +66,7 @@ def train_model(training_df, target_column: str, model_type: str):
         "target": target_column,
         "model_type": model_type,
         "model": model,
+        "X_test": X_test,
         "rmse": root_mean_squared_error(y_test, predictions),
         "mae": mean_absolute_error(y_test, predictions),
         "r2": r2_score(y_test, predictions),
