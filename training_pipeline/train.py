@@ -9,7 +9,9 @@ from feature_pipeline.train_test_split import time_based_split
 FEATURE_COLUMNS = [
     "aqi", "co", "no2", "so2", "o3", "pm2_5", "pm10", "nh3",
     "hour", "day_of_week", "month",
-    "aqi_lag_1h", "aqi_lag_24h", "aqi_change_rate",
+    "aqi_lag_1h", "aqi_lag_24h", "aqi_lag_48h", "aqi_lag_72h",
+    "aqi_change_rate",
+    "aqi_rolling_mean_24h", "pm2_5_rolling_mean_24h", "pm10_rolling_mean_24h",
 ]
 
 MODEL_BUILDERS = {

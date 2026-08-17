@@ -23,7 +23,8 @@ def build_training_dataset(df: pd.DataFrame) -> pd.DataFrame:
     df["target_3d"] = df.groupby("city")["aqi"].shift(-72)
 
     required_columns = [
-        "aqi_lag_1h", "aqi_lag_24h",
+        "aqi_lag_1h", "aqi_lag_24h", "aqi_lag_48h", "aqi_lag_72h",
+        "aqi_rolling_mean_24h", "pm2_5_rolling_mean_24h", "pm10_rolling_mean_24h",
         "target_1d", "target_2d", "target_3d",
     ]
     df = df.dropna(subset=required_columns).reset_index(drop=True)
