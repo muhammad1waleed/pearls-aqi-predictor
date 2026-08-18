@@ -46,13 +46,20 @@ def get_or_create_aqi_feature_group(fs):
 def insert_row(feature_group, row: dict):
     """
     Insert a single feature row into the given feature group.
-
     Args:
         feature_group: The Hopsworks FeatureGroup to write to.
         row (dict): A single flat feature row (from fetch_current_features).
     """
     df = pd.DataFrame([row])
     df["timestamp"] = pd.to_datetime(df["timestamp"])
+
+    # Explicitly enforce float64 for weather columns — pandas can silently
+    # infer int64 for a single-row DataFrame when a float value has no
+    # fractional part (e.g. 41.0), which breaks Hopsworks' schema check.
+    weather_columns = ["temperature", "humidity", "pressure", "wind_speed", "wind_deg"]
+    for col in weather_columns:
+        df[col] = df[col].astype("float64")
+
     feature_group.insert(df)
 
 
