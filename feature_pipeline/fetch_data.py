@@ -55,12 +55,11 @@ def fetch_current_features() -> dict:
         # "timestamp": datetime.now(timezone.utc).isoformat(),
         "timestamp": datetime.now(timezone.utc),
 
-        "temperature": weather_data["main"]["temp"],
-        "humidity": weather_data["main"]["humidity"],
-        "pressure": weather_data["main"]["pressure"],
-        "wind_speed": weather_data["wind"]["speed"],
-        # "wind_deg": weather_data["wind"].get("deg"),
-        "wind_deg": weather_data["wind"].get("deg", 0),
+        "temperature": float(weather_data["main"]["temp"]),
+        "humidity": float(weather_data["main"]["humidity"]),
+        "pressure": float(weather_data["main"]["pressure"]),
+        "wind_speed": float(weather_data["wind"]["speed"]),
+        "wind_deg": float(weather_data["wind"].get("deg", 0)),
 
         "aqi": pollution_data["main"]["aqi"],
         "co": pollution_data["components"]["co"],
