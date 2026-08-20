@@ -22,7 +22,7 @@ furl==2.1.4
 greenlet==3.5.5
 grpcio==1.83.0
 h11==0.16.0
-hopsworks==5.0.4
+hopsworks==5.0.5
 hopsworks-aiomysql==0.2.2
 hopsworks-apigen==1.0.5
 httptools==0.8.0
@@ -47,7 +47,7 @@ packaging==26.3
 pandas==2.3.3
 pillow==12.3.0
 pluggy==1.6.0
-protobuf==7.35.1
+protobuf==4.25.9
 pyarrow==25.0.1
 pyasn1==0.6.4
 pyasn1_modules==0.4.2
