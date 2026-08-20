@@ -8,7 +8,7 @@ import streamlit as st
 from explain_prediction import explain_single_prediction
 from load_models import load_latest_models
 from predict import get_latest_feature_row, generate_forecast
-from aqi_labels import get_aqi_label
+from aqi_labels import get_aqi_label, check_hazard_alerts
 
 st.set_page_config(page_title="Rawalpindi AQI Forecast", page_icon="🌫️")
 
@@ -51,8 +51,18 @@ st.caption("3-day Air Quality Index forecast, powered by a serverless ML pipelin
 with st.spinner("Loading latest forecast..."):
     forecast, current_aqi = get_forecast()
 
+
 current_label, current_emoji = get_aqi_label(current_aqi)
 st.metric("Current AQI", f"{current_emoji} {current_label}", f"{current_aqi:.1f}")
+
+hazard_warnings = check_hazard_alerts(forecast)
+
+if hazard_warnings:
+    st.warning("⚠️ **Hazardous air quality expected:**")
+    for warning in hazard_warnings:
+        st.write(f"- {warning}")
+else:
+    st.success("✅ No hazardous AQI levels expected in the next 3 days.")
 
 st.subheader("Next 3 Days")
 col1, col2, col3 = st.columns(3)
