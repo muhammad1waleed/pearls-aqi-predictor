@@ -24,3 +24,29 @@ not an active fix, as of this writing.
   (excluded via `.gitignore`) and GitHub Actions Secrets in CI.
 - Full Git history has been audited to confirm no secret values were
   ever committed (see project development log).
+
+
+  ## API Key Scope Reduction
+
+The Hopsworks API key was initially provisioned with 12 broad scopes
+(`dataset_delete`, `user`, `featurestore`, `dataset_create`, `kafka`,
+`dataset_view`, `job`, `python_libraries`, `serving`, `project`, `git`,
+`modelregistry`) during early project setup.
+
+A reduction attempt was made to scope the key down to only what the
+project actually uses (`featurestore`, `modelregistry`). Testing
+revealed that `hopsworks.login()` requires `project` scope to resolve
+project context, and separately attempts to initialize model-serving
+configuration internally regardless of whether serving is used - a
+code path that fails ungracefully (an `AttributeError` rather than a
+clean degradation) when `serving` scope is absent.
+
+**Final scope set:** `featurestore`, `modelregistry`, `kafka`, `job`,
+`dataset_create`, `dataset_view`, `project`, `serving` (8 scopes,
+down from the original 12). Removed: `dataset_delete`, `user`,
+`python_libraries`, `git` - none of which this project's code ever
+exercises.
+
+Both the local environment and GitHub Actions Secrets were updated
+and verified working with the reduced-scope key before the original
+broad key was deleted.
