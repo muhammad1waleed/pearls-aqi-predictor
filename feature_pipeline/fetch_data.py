@@ -47,7 +47,13 @@ def fetch_current_features() -> dict:
         raise RuntimeError(
             f"Pollution API failed: {pollution_resp.status_code} - {pollution_resp.text}"
         )
-    pollution_data = pollution_resp.json()["list"][0]
+    pollution_json = pollution_resp.json()
+    if not pollution_json.get("list"):
+        raise RuntimeError(
+            f"Pollution API returned no data for the configured location. "
+            f"Response: {pollution_json}"
+        )
+    pollution_data = pollution_json["list"][0]
 
     # --- Merge into one flat row ---
     merged_row = {

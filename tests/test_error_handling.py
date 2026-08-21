@@ -53,4 +53,29 @@ def test_fetch_raises_runtimeerror_on_pollution_api_failure():
             side_effect=[good_weather_response, bad_pollution_response],
         ):
             with pytest.raises(RuntimeError, match="Pollution API failed: 500"):
-                fetch_data.fetch_current_features()            
+                fetch_data.fetch_current_features()
+
+def test_fetch_raises_runtimeerror_on_empty_pollution_list():
+    """
+    fetch_current_features() must raise a clear RuntimeError if the
+    Pollution API returns a 200 status but an empty 'list' - a subtler
+    failure mode than a bad status code.
+    """
+    good_weather_response = MagicMock()
+    good_weather_response.status_code = 200
+    good_weather_response.json.return_value = {
+        "main": {"temp": 30, "humidity": 50, "pressure": 1000},
+        "wind": {"speed": 2.0, "deg": 90},
+    }
+
+    empty_pollution_response = MagicMock()
+    empty_pollution_response.status_code = 200
+    empty_pollution_response.json.return_value = {"list": []}
+
+    with patch.object(fetch_data, "API_KEY", "fake_key_for_test"):
+        with patch(
+            "feature_pipeline.fetch_data.requests.get",
+            side_effect=[good_weather_response, empty_pollution_response],
+        ):
+            with pytest.raises(RuntimeError, match="no data for the configured location"):
+                fetch_data.fetch_current_features()
