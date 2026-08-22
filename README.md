@@ -71,6 +71,12 @@ Three independent models forecast AQI at three horizons. Each was trained on ~8,
 
 SHAP analysis shows the same pattern: `aqi` (the current reading) dominates the 1-day prediction, while pollutant composition (`pm10`, `pm2_5`, `co`) becomes more influential at longer horizons — current AQI is a strong short-term signal but a weak long-term one.
 
+## Exploratory Data Analysis
+
+Analysis of ~8,500 hourly readings (Aug 2025–Aug 2026) revealed that Rawalpindi's air quality is predominantly poor: the mean AQI is 3.91 (median 4) on OpenWeather's 1–5 scale, and **62.4% of all hourly readings fall into the hazardous range (AQI ≥ 4)**. This context matters for interpreting model performance — the models are frequently distinguishing between "poor" and "very poor" conditions rather than across the full range of possible air quality, which is a harder discrimination task than the R² values alone might suggest.
+
+See `notebooks/eda.py` for the full analysis, including AQI trends over time, seasonal patterns by month, daily patterns by hour, and a pollutant correlation heatmap.
+
 ## Project structure
 
 ```
