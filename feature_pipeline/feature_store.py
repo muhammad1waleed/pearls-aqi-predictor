@@ -3,9 +3,20 @@ import hopsworks
 from dotenv import load_dotenv
 import pandas as pd
 
+
 load_dotenv()
 
-HOPSWORKS_API_KEY = os.getenv("HOPSWORKS_API_KEY")
+def _get_hopsworks_api_key():
+    key = os.getenv("HOPSWORKS_API_KEY")
+    if key:
+        return key
+    try:
+        import streamlit as st
+        return st.secrets.get("HOPSWORKS_API_KEY")
+    except Exception:
+        return None
+
+HOPSWORKS_API_KEY = _get_hopsworks_api_key()
 
 
 def get_feature_store():

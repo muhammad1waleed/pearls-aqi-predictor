@@ -3,10 +3,11 @@ import joblib
 
 import hopsworks
 from dotenv import load_dotenv
+import streamlit as st
 
 load_dotenv()
 
-HOPSWORKS_API_KEY = os.getenv("HOPSWORKS_API_KEY")
+HOPSWORKS_API_KEY = os.getenv("HOPSWORKS_API_KEY") or st.secrets.get("HOPSWORKS_API_KEY")
 
 MODEL_NAMES = {
     "target_1d": "aqi_target_1d_random_forest",
