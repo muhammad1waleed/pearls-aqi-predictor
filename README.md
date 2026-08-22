@@ -84,7 +84,9 @@ pearls-aqi-predictor/
 ├── requirements.txt             # Full dependencies (dashboard + pipelines)
 ├── requirements-pipeline.txt   # Pipeline-only dependencies (excludes Streamlit)
 ├── SECURITY.md                  # Security review notes and known limitations
-└── runtime.txt                  # Pins Python version for Streamlit Cloud
+├── runtime.txt                  # Pins Python version for Streamlit Cloud
+├── .env.example                  # Template for required environment variables
+└── saved_models/                 # Locally-saved models before registry upload (gitignored, not tracked)
 ```
 
 ## Running locally
